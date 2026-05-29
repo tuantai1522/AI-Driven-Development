@@ -114,6 +114,7 @@
 ## Task 1: Scaffold the Solution Skeleton
 
 **Files:**
+
 - Create: `SuperPowerAI.sln`
 - Create: `Directory.Build.props`
 - Create: `global.json`
@@ -162,10 +163,10 @@ dotnet add tests/AppHost.Api.IntegrationTests/AppHost.Api.IntegrationTests.cspro
 ```json
 // global.json
 {
-  "sdk": {
-    "version": "10.0.100",
-    "rollForward": "latestFeature"
-  }
+    "sdk": {
+        "version": "10.0.100",
+        "rollForward": "latestFeature"
+    }
 }
 ```
 
@@ -211,6 +212,7 @@ git commit -m "chore: scaffold backend starter solution"
 ## Task 2: Add Package References and Shared Application Primitives
 
 **Files:**
+
 - Modify: `src/AppHost.Api/AppHost.Api.csproj`
 - Modify: `src/AppModules/AppModules.csproj`
 - Modify: `src/BuildingBlocks/BuildingBlocks.csproj`
@@ -433,6 +435,7 @@ git commit -m "feat: add shared backend primitives"
 ## Task 3: Add Infrastructure and Persistence Boundaries
 
 **Files:**
+
 - Create: `src/AppModules/Sample/Domain/SampleItem.cs`
 - Create: `src/Infrastructure/DependencyInjection.cs`
 - Create: `src/Infrastructure/Persistence/ApplicationDbContext.cs`
@@ -442,7 +445,7 @@ git commit -m "feat: add shared backend primitives"
 - Create: `src/AppHost.Api/appsettings.Development.json`
 - Create: `docker-compose.yml`
 
-- [ ] **Step 1: Create the persistence model and DbContext**
+- [x] **Step 1: Create the persistence model and DbContext**
 
 ```csharp
 // src/AppModules/Sample/Domain/SampleItem.cs
@@ -495,7 +498,7 @@ public sealed class SampleItemConfiguration : IEntityTypeConfiguration<SampleIte
 }
 ```
 
-- [ ] **Step 2: Configure PostgreSQL-backed infrastructure registration**
+- [x] **Step 2: Configure PostgreSQL-backed infrastructure registration**
 
 ```csharp
 // src/Infrastructure/DependencyInjection.cs
@@ -524,58 +527,58 @@ public static class DependencyInjection
 ```yaml
 # docker-compose.yml
 services:
-  postgres:
-    image: postgres:17
-    container_name: superpowerai-postgres
-    environment:
-      POSTGRES_DB: superpowerai
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5433:5432"
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
+    postgres:
+        image: postgres:17
+        container_name: superpowerai-postgres
+        environment:
+            POSTGRES_DB: superpowerai
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+        ports:
+            - "5433:5432"
+        volumes:
+            - postgres-data:/var/lib/postgresql/data
 
 volumes:
-  postgres-data:
+    postgres-data:
 ```
 
-- [ ] **Step 3: Add environment-based configuration**
+- [x] **Step 3: Add environment-based configuration**
 
 ```json
 // src/AppHost.Api/appsettings.json
 {
-  "ConnectionStrings": {
-    "Postgres": "Host=localhost;Port=5433;Database=superpowerai;Username=postgres;Password=postgres"
-  },
-  "Serilog": {
-    "Using": [ "Serilog.Sinks.Console" ],
-    "MinimumLevel": {
-      "Default": "Information",
-      "Override": {
-        "Microsoft": "Warning",
-        "Microsoft.AspNetCore": "Warning"
-      }
+    "ConnectionStrings": {
+        "Postgres": "Host=localhost;Port=5433;Database=superpowerai;Username=postgres;Password=postgres"
     },
-    "WriteTo": [ { "Name": "Console" } ],
-    "Enrich": [ "FromLogContext" ]
-  }
+    "Serilog": {
+        "Using": ["Serilog.Sinks.Console"],
+        "MinimumLevel": {
+            "Default": "Information",
+            "Override": {
+                "Microsoft": "Warning",
+                "Microsoft.AspNetCore": "Warning"
+            }
+        },
+        "WriteTo": [{ "Name": "Console" }],
+        "Enrich": ["FromLogContext"]
+    }
 }
 ```
 
 ```json
 // src/AppHost.Api/appsettings.Development.json
 {
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft.AspNetCore": "Warning"
+    "Logging": {
+        "LogLevel": {
+            "Default": "Information",
+            "Microsoft.AspNetCore": "Warning"
+        }
     }
-  }
 }
 ```
 
-- [ ] **Step 4: Add the first migration and verify infrastructure builds**
+- [x] **Step 4: Add the first migration and verify infrastructure builds**
 
 Run: `dotnet ef migrations add InitialCreate --project src/Infrastructure --startup-project src/AppHost.Api --output-dir Persistence/Migrations`
 Expected: migration files appear under `src/Infrastructure/Persistence/Migrations`
@@ -583,7 +586,7 @@ Expected: migration files appear under `src/Infrastructure/Persistence/Migration
 Run: `dotnet build SuperPowerAI.sln`
 Expected: `Build succeeded.`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/AppModules src/Infrastructure src/AppHost.Api docker-compose.yml
@@ -593,6 +596,7 @@ git commit -m "feat: add database infrastructure"
 ## Task 4: Implement the Sample Vertical Slices
 
 **Files:**
+
 - Create: `src/AppModules/Sample/Features/Create/Command.cs`
 - Create: `src/AppModules/Sample/Features/Create/Validator.cs`
 - Create: `src/AppModules/Sample/Features/Create/Handler.cs`
@@ -607,7 +611,7 @@ git commit -m "feat: add database infrastructure"
 - Create: `src/AppModules/Sample/Features/List/Endpoint.cs`
 - Create: `src/AppModules/Sample/Features/List/Response.cs`
 
-- [ ] **Step 1: Write the first failing validator test for create**
+- [x] **Step 1: Write the first failing validator test for create**
 
 ```csharp
 // tests/AppModules.UnitTests/Sample/CreateSampleValidatorTests.cs
@@ -632,12 +636,12 @@ public sealed class CreateSampleValidatorTests
 }
 ```
 
-- [ ] **Step 2: Run the unit test to verify it fails**
+- [x] **Step 2: Run the unit test to verify it fails**
 
 Run: `dotnet test tests/AppModules.UnitTests/AppModules.UnitTests.csproj --filter CreateSampleValidatorTests -v minimal`
 Expected: FAIL because `Command` and `Validator` do not exist yet
 
-- [ ] **Step 3: Implement the create slice**
+- [x] **Step 3: Implement the create slice**
 
 ```csharp
 // src/AppModules/Sample/Features/Create/Command.cs
@@ -731,7 +735,7 @@ public sealed class Endpoint : IEndpoint
 }
 ```
 
-- [ ] **Step 4: Implement the read slices**
+- [x] **Step 4: Implement the read slices**
 
 ```csharp
 // src/AppModules/Sample/Features/GetById/Query.cs
@@ -872,12 +876,12 @@ namespace AppModules.Sample.Features.List;
 public sealed record Response(Guid Id, string Name, DateTime CreatedUtc);
 ```
 
-- [ ] **Step 5: Run unit tests to verify the create validator now passes**
+- [x] **Step 5: Run unit tests to verify the create validator now passes**
 
 Run: `dotnet test tests/AppModules.UnitTests/AppModules.UnitTests.csproj --filter CreateSampleValidatorTests -v minimal`
 Expected: PASS
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/AppModules tests/AppModules.UnitTests
@@ -887,6 +891,7 @@ git commit -m "feat: add sample vertical slices"
 ## Task 5: Wire the API Host and Cross-Cutting Behavior
 
 **Files:**
+
 - Create: `src/AppHost.Api/Extensions/ServiceCollectionExtensions.cs`
 - Create: `src/AppHost.Api/Extensions/ApplicationExtensions.cs`
 - Create: `src/AppHost.Api/ExceptionHandling/GlobalExceptionHandler.cs`
@@ -894,7 +899,7 @@ git commit -m "feat: add sample vertical slices"
 - Modify: `src/BuildingBlocks/Application/Behaviors/RequestLoggingBehavior.cs`
 - Modify: `src/BuildingBlocks/Application/Exceptions/RequestValidationException.cs`
 
-- [ ] **Step 1: Write the first failing integration test for health bootstrapping**
+- [x] **Step 1: Write the first failing integration test for health bootstrapping**
 
 ```csharp
 // tests/AppHost.Api.IntegrationTests/HealthEndpointTests.cs
@@ -917,12 +922,12 @@ public sealed class HealthEndpointTests(CustomWebApplicationFactory factory) : I
 }
 ```
 
-- [ ] **Step 2: Run the health test to verify it fails**
+- [x] **Step 2: Run the health test to verify it fails**
 
 Run: `dotnet test tests/AppHost.Api.IntegrationTests/AppHost.Api.IntegrationTests.csproj --filter HealthEndpointTests -v minimal`
 Expected: FAIL because the host extensions and test factory do not exist yet
 
-- [ ] **Step 3: Implement the host composition root**
+- [x] **Step 3: Implement the host composition root**
 
 ```csharp
 // src/AppHost.Api/Program.cs
@@ -1006,7 +1011,7 @@ public static class ApplicationExtensions
 }
 ```
 
-- [ ] **Step 4: Implement exception handling and request logging**
+- [x] **Step 4: Implement exception handling and request logging**
 
 ```csharp
 // src/AppHost.Api/ExceptionHandling/GlobalExceptionHandler.cs
@@ -1048,12 +1053,12 @@ public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logge
 }
 ```
 
-- [ ] **Step 5: Run the health integration test again**
+- [x] **Step 5: Run the health integration test again**
 
 Run: `dotnet test tests/AppHost.Api.IntegrationTests/AppHost.Api.IntegrationTests.csproj --filter HealthEndpointTests -v minimal`
 Expected: PASS
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/AppHost.Api src/BuildingBlocks tests/AppHost.Api.IntegrationTests
@@ -1063,6 +1068,7 @@ git commit -m "feat: wire api host and middleware"
 ## Task 6: Add Unit Tests for Validators and Handlers
 
 **Files:**
+
 - Create: `tests/AppModules.UnitTests/Sample/CreateSampleHandlerTests.cs`
 - Create: `tests/AppModules.UnitTests/Sample/ListSamplesHandlerTests.cs`
 - Modify: `tests/AppModules.UnitTests/Sample/CreateSampleValidatorTests.cs`
@@ -1154,6 +1160,7 @@ git commit -m "test: add slice unit coverage"
 ## Task 7: Add PostgreSQL-Backed Integration Tests
 
 **Files:**
+
 - Create: `tests/AppHost.Api.IntegrationTests/Fixtures/PostgresContainerFixture.cs`
 - Create: `tests/AppHost.Api.IntegrationTests/Fixtures/CustomWebApplicationFactory.cs`
 - Create: `tests/AppHost.Api.IntegrationTests/SampleEndpointsTests.cs`
@@ -1274,6 +1281,7 @@ git commit -m "test: add postgres-backed integration tests"
 ## Task 8: Finish Developer Operations and Final Verification
 
 **Files:**
+
 - Create: `README.md`
 - Modify: `src/AppHost.Api/Program.cs`
 - Modify: `src/AppHost.Api/appsettings.Development.json`
@@ -1281,8 +1289,9 @@ git commit -m "test: add postgres-backed integration tests"
 
 - [ ] **Step 1: Add final developer workflow documentation**
 
-```md
+````md
 <!-- README.md -->
+
 # SuperPowerAI
 
 ## Prerequisites
@@ -1292,24 +1301,26 @@ git commit -m "test: add postgres-backed integration tests"
 
 ## Local database
 
-~~~bash
+```bash
 docker compose up -d postgres
-~~~
+```
+````
 
 ## Run the API
 
-~~~bash
+```bash
 dotnet run --project src/AppHost.Api
-~~~
+```
 
 Open Scalar at `http://localhost:5000/scalar/v1`.
 
 ## Tests
 
-~~~bash
+```bash
 dotnet test SuperPowerAI.sln
-~~~
 ```
+
+````
 
 - [ ] **Step 2: Verify the full starter end to end**
 
@@ -1327,7 +1338,7 @@ Expected: host starts, OpenAPI is exposed, `/health` returns `200 OK`, and Scala
 ```bash
 git add README.md src/AppHost.Api .gitignore
 git commit -m "docs: finish backend starter setup"
-```
+````
 
 ## Self-Review
 

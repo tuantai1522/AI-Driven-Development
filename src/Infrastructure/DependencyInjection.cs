@@ -1,3 +1,4 @@
+using AppModules.Abstractions;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +15,8 @@ public static class DependencyInjection
 
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString));
+        services.AddScoped<IApplicationDbContext>(serviceProvider =>
+            serviceProvider.GetRequiredService<ApplicationDbContext>());
 
         return services;
     }
