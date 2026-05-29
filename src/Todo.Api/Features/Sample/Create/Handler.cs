@@ -1,7 +1,7 @@
 using BuildingBlocks.Application.Results;
-using Infrastructure.Abstractions;
-using Infrastructure.Persistence.Models;
 using MediatR;
+using Todo.Api.Abstractions.Persistence;
+using Todo.Api.Persistence.Models;
 
 namespace Todo.Api.Features.Sample.Create;
 

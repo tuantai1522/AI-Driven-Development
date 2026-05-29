@@ -1,0 +1,6 @@
+namespace Todo.Api.Abstractions.Security;
+
+public interface IPasswordHasher
+{
+    string Hash(string password);
+}

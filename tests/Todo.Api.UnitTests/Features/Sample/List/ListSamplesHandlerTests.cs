@@ -1,8 +1,8 @@
 using Todo.Api.Features.Sample.List;
 using FluentAssertions;
-using Infrastructure.Persistence;
-using Infrastructure.Persistence.Models;
 using Microsoft.EntityFrameworkCore;
+using Todo.Api.Persistence;
+using Todo.Api.Persistence.Models;
 
 namespace Todo.Api.UnitTests.Features.Sample.List;
 

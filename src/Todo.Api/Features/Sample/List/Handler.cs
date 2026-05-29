@@ -1,7 +1,7 @@
 using BuildingBlocks.Application.Results;
-using Infrastructure.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Todo.Api.Abstractions.Persistence;
 
 namespace Todo.Api.Features.Sample.List;
 

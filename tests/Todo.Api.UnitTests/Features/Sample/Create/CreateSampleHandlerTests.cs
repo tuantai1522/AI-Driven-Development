@@ -1,7 +1,7 @@
 using Todo.Api.Features.Sample.Create;
 using FluentAssertions;
-using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Todo.Api.Persistence;
 
 namespace Todo.Api.UnitTests.Features.Sample.Create;
 

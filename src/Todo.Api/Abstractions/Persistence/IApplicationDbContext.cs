@@ -1,7 +1,7 @@
-using Infrastructure.Persistence.Models;
 using Microsoft.EntityFrameworkCore;
+using Todo.Api.Persistence.Models;
 
-namespace Infrastructure.Abstractions;
+namespace Todo.Api.Abstractions.Persistence;
 
 public interface IApplicationDbContext
 {
