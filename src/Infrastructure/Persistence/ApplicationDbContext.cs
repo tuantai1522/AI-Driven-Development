@@ -1,5 +1,5 @@
-using AppModules.Abstractions;
-using AppModules.Sample.Domain;
+using Infrastructure.Abstractions;
+using Infrastructure.Persistence.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence;
