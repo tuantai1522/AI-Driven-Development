@@ -6,6 +6,8 @@ Date: 2026-05-29
 
 Scaffold a backend starter on .NET for future business domains with these constraints:
 
+- .NET 10
+- Solution/product name: `SuperPowerAI`
 - PostgreSQL as the primary database
 - Vertical-slice structure
 - FluentValidation
@@ -90,7 +92,7 @@ Reasoning:
 
 Each feature endpoint will be mapped through a small contract such as `IEndpoint` so feature registration remains explicit and discoverable.
 
-Routes will be namespaced under `/api/v1/...`. Full API versioning infrastructure is not required in the initial scaffold.
+Routes will be namespaced under a shared `/api/v1` prefix defined once at the host or route-group level, not repeated inside every endpoint implementation. Full API versioning infrastructure is not required in the initial scaffold.
 
 ## CQRS Design
 
@@ -145,17 +147,24 @@ Because there is no real domain yet, the starter should use simple entities and 
 
 The starter should still keep persistence boundaries clean enough that business modules do not depend on raw infrastructure setup details.
 
+Default local database settings:
+
+- database name: `superpowerai`
+- PostgreSQL port: `5433`
+
 ## Error Handling
 
-The API host will provide centralized exception handling and standardized `ProblemDetails` responses.
+The API host will provide centralized exception handling and use standard .NET `ProblemDetails` responses for failures.
 
 Expected behavior:
 
-- validation failures return structured client errors
-- unhandled exceptions are mapped to safe server error responses
-- API responses are consistent across slices
+- successful responses return plain response data and do not need to be wrapped in a custom envelope
+- validation failures return `ValidationProblemDetails`
+- explicit application failures produced from `Result.Failure(...)` are mapped to `ProblemDetails` at the endpoint boundary
+- unhandled exceptions are mapped to safe server-error `ProblemDetails`
+- API responses are consistent across slices and global exception handling
 
-This should use standard ASP.NET Core capabilities unless a concrete gap appears during implementation.
+This keeps success responses simple while relying on the built-in .NET error contract for failures.
 
 ## API Documentation and UI
 
@@ -183,6 +192,8 @@ These are included because they are likely to be needed immediately in a real ba
 The scaffold should include the test structure from the start.
 
 ### Unit Tests
+
+`xUnit` is the default test framework for the starter at the current stage.
 
 Unit tests focus on:
 
@@ -213,6 +224,7 @@ Expected core packages:
 - `Serilog.AspNetCore`
 - `Microsoft.AspNetCore.OpenApi`
 - `Microsoft.AspNetCore.Mvc.Testing`
+- `xunit`
 
 Optional but recommended for stronger integration testing:
 
@@ -229,6 +241,10 @@ The initial scaffold will not include:
 - caching
 - advanced domain-driven design patterns
 - multiple business modules beyond the sample reference module
+
+## Platform Baseline
+
+The starter targets `.NET 10`.
 
 These can be added later when real requirements justify them.
 
