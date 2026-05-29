@@ -22,10 +22,10 @@ The feature will follow the existing vertical-slice pattern while introducing a 
 This means:
 
 - the HTTP/API flow still uses `Endpoint -> Command -> Validator -> Handler`
-- the application handler injects `IApplicationDbContext` directly
+- the application handler injects `IApplicationDbContext` directly from `Todo.Api`
 - `User` is modeled as a domain entity instead of a persistence-only record
 - EF Core maps the `User` entity directly
-- password hashing is delegated to an abstraction such as `IPasswordHasher`
+- password hashing is delegated to an abstraction such as `IPasswordHasher`, backed by a custom implementation
 
 This keeps the implementation aligned with the current codebase while avoiding a pure CRUD-style user model.
 
@@ -55,11 +55,9 @@ The feature fits into the current modular monolith structure with minimal change
 
 - `src/Todo.Api`
   - owns the `User` domain entity and sign-up feature slice
+  - owns the password hashing abstraction and concrete hasher
   - contains the application behavior for registration
-- `src/Infrastructure`
-  - owns EF Core configuration and persistence wiring
-  - implements password hashing adapter
-  - includes the schema migration for users
+  - owns EF Core configuration, persistence wiring, and migrations for this service
 
 Expected new structure:
 
@@ -70,8 +68,11 @@ Expected new structure:
 - `src/Todo.Api/Features/Auth/SignUp/Handler.cs`
 - `src/Todo.Api/Features/Auth/SignUp/Endpoint.cs`
 - `src/Todo.Api/Abstractions/Security/IPasswordHasher.cs`
-- `src/Infrastructure/Persistence/Configurations/UserConfiguration.cs`
-- `src/Infrastructure/Security/PasswordHasher.cs`
+- `src/Todo.Api/Security/PasswordHasher.cs`
+- `src/Todo.Api/Abstractions/Persistence/IApplicationDbContext.cs`
+- `src/Todo.Api/Persistence/ApplicationDbContext.cs`
+- `src/Todo.Api/Persistence/Configurations/UserConfiguration.cs`
+- `src/Todo.Api/Persistence/Migrations/*`
 
 If the current project already has a better local namespace or folder for security abstractions, that local pattern should win.
 
@@ -87,13 +88,13 @@ Minimum persisted fields:
 - `PasswordHash`
 - `CreatedAtUtc`
 
-The entity should not accept a raw password. A factory such as `User.Register(...)` should be used so the entity is always created in a valid state.
+The entity should not accept a raw password. A factory such as `User.Register(...)` should be used so the handler always passes a hashed password into the entity.
 
-The entity is responsible for its own invariants at creation time:
+In this version, creation-time validation stays outside the domain entity:
 
-- `Email` must be present
-- `UserName` must be present and have length between 3 and 30 characters
-- `PasswordHash` must be present
+- request-shape validation stays in FluentValidation
+- uniqueness validation stays in the application handler and database constraints
+- `User.Register(...)` is a simple construction path rather than an invariant-enforcing guard layer
 
 The domain model should not know how passwords are hashed and should not depend on EF-specific behavior.
 
@@ -135,13 +136,18 @@ Business validation rules:
 
 No stronger password policy is required in this first version.
 
+Hashing rule:
+
+- `Password` must be converted to a non-reversible hash before persistence
+- the initial implementation may use a custom PBKDF2-based hasher instead of Microsoft Identity's hasher
+
 ## Persistence Design
 
 EF Core will map `User` directly instead of mapping a separate persistence-only model.
 
 Persistence requirements:
 
-- add `DbSet<User>` to the application DbContext abstraction and implementation
+- add `DbSet<User>` to the application DbContext abstraction and implementation in `Todo.Api`
 - configure lengths and required fields in `UserConfiguration`
 - create unique indexes for `Email` and `UserName`
 - add a migration for the new users table
@@ -161,7 +167,7 @@ The design must also account for race conditions:
 
 - if two requests pass the pre-check and one later hits a database unique constraint, the application should still translate that failure into `409 Conflict` rather than leaking a generic `500`
 
-The exact mechanism can be implemented either in the handler or in a narrow infrastructure-aware error translation path, but the externally visible API behavior should remain the same.
+The exact mechanism can be implemented either in the handler or in a narrow EF-aware error translation path inside `Todo.Api`, but the externally visible API behavior should remain the same.
 
 ## API Contract
 
@@ -204,6 +210,7 @@ Add unit tests for:
 - handler returns conflict when email already exists
 - handler returns conflict when user name already exists
 - handler uses the password hasher before persistence
+- custom password hasher returns a non-plain-text value
 
 ### Integration Tests
 
@@ -233,5 +240,6 @@ After implementation, the codebase should support a clean first registration flo
 
 - matches the existing vertical-slice architecture
 - introduces a minimal but real domain boundary for `User`
+- keeps the feature self-contained in `Todo.Api`, including EF mapping and migrations
 - avoids adding repository abstractions the team does not want
 - leaves a straightforward path for future login/auth work without rewriting the user creation flow
