@@ -1,8 +1,8 @@
-using Infrastructure.Persistence.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Todo.Api.Persistence.Models;
 
-namespace Infrastructure.Persistence.Configurations;
+namespace Todo.Api.Persistence.Configurations;
 
 public sealed class SampleItemConfiguration : IEntityTypeConfiguration<SampleItem>
 {

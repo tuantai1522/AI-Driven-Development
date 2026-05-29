@@ -1,4 +1,4 @@
-namespace Infrastructure.Persistence.Models;
+namespace Todo.Api.Persistence.Models;
 
 public sealed class SampleItem
 {
