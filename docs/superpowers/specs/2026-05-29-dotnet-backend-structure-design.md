@@ -30,17 +30,16 @@ This balances:
 
 ## Architecture Overview
 
-The solution will be organized into a small set of focused projects:
+The current implementation is organized into a small set of focused projects:
 
-- `src/AppHost.Api`
+- `src/Todo.Api`
   - application entry point
   - DI composition root
   - middleware registration
   - OpenAPI and Scalar setup
   - health checks
   - endpoint discovery and mapping
-- `src/AppModules`
-  - business-neutral modules and feature slices
+  - business-neutral feature slices
   - initial `Sample` module used as the reference pattern
 - `src/BuildingBlocks`
   - shared abstractions and cross-cutting primitives
@@ -51,23 +50,30 @@ The solution will be organized into a small set of focused projects:
   - EF Core persistence
   - PostgreSQL configuration
   - `DbContext`
+  - persistence-facing sample entity and database abstraction
   - entity configurations
   - migrations
   - persistence-related dependency registration
-- `tests/AppHost.Api.IntegrationTests`
+- `tests/Todo.Api.IntegrationTests`
   - end-to-end API and infrastructure verification
-- `tests/AppModules.UnitTests`
+- `tests/Todo.Api.UnitTests`
   - focused unit tests for handlers, validators, and slice behavior
 
 ## Vertical-Slice Structure
 
-The codebase will be organized by feature first, not by technical layer.
+The codebase will be organized by module first, then by feature slice, not by technical layer.
 
 The initial sample module will demonstrate the pattern with slices such as:
 
 - `Features/Sample/Create`
 - `Features/Sample/GetById`
 - `Features/Sample/List`
+
+Future business modules should follow the same shape, for example:
+
+- `Features/Todo/Create`
+- `Features/Todo/GetById`
+- `Features/Todo/List`
 
 Each slice should keep its behavior in one place. A slice may contain:
 
@@ -143,7 +149,7 @@ Initial persistence structure:
 - `Persistence/Configurations/*`
 - `Persistence/Migrations/*`
 
-EF Core migrations should be executed through the `src/AppHost.Api` startup project so database configuration comes from the same host configuration path used at runtime.
+EF Core migrations should be executed through the `src/Todo.Api` startup project so database configuration comes from the same host configuration path used at runtime.
 
 Because there is no real domain yet, the starter should use simple entities and straightforward EF Core mapping. It should avoid premature DDD complexity such as rich aggregates, domain event infrastructure, or advanced repository abstractions.
 

@@ -25,7 +25,7 @@ namespace Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("AppModules.Sample.Domain.SampleItem", b =>
+            modelBuilder.Entity("Infrastructure.Persistence.Models.SampleItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

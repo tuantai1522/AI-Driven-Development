@@ -1,4 +1,4 @@
-using AppModules.Sample.Domain;
+using Infrastructure.Persistence.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

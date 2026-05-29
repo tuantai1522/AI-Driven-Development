@@ -1,4 +1,4 @@
-using AppModules.Abstractions;
+using Infrastructure.Abstractions;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

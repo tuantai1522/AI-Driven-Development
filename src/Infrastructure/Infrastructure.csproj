@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BuildingBlocks\BuildingBlocks.csproj" />
-    <ProjectReference Include="..\AppModules\AppModules.csproj" />
   </ItemGroup>
 
   <ItemGroup>
