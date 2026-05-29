@@ -143,6 +143,8 @@ Initial persistence structure:
 - `Persistence/Configurations/*`
 - `Persistence/Migrations/*`
 
+EF Core migrations should be executed through the `src/AppHost.Api` startup project so database configuration comes from the same host configuration path used at runtime.
+
 Because there is no real domain yet, the starter should use simple entities and straightforward EF Core mapping. It should avoid premature DDD complexity such as rich aggregates, domain event infrastructure, or advanced repository abstractions.
 
 The starter should still keep persistence boundaries clean enough that business modules do not depend on raw infrastructure setup details.

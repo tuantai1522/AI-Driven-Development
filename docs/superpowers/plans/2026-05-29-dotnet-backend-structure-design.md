@@ -91,6 +91,7 @@
   Responsibility: sample entity mapping.
 - `src/Infrastructure/Persistence/Migrations/*`
   Responsibility: initial schema creation for PostgreSQL.
+  Migration commands run with `src/AppHost.Api` as the startup project so EF uses the same host-based configuration as runtime.
 
 ### Test Projects
 
@@ -1073,7 +1074,7 @@ git commit -m "feat: wire api host and middleware"
 - Create: `tests/AppModules.UnitTests/Sample/ListSamplesHandlerTests.cs`
 - Modify: `tests/AppModules.UnitTests/Sample/CreateSampleValidatorTests.cs`
 
-- [ ] **Step 1: Write the failing create handler test**
+- [x] **Step 1: Write the failing create handler test**
 
 ```csharp
 // tests/AppModules.UnitTests/Sample/CreateSampleHandlerTests.cs
@@ -1104,12 +1105,12 @@ public sealed class CreateSampleHandlerTests
 }
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `dotnet test tests/AppModules.UnitTests/AppModules.UnitTests.csproj --filter CreateSampleHandlerTests -v minimal`
 Expected: FAIL until the project references and EF Core test usage are wired correctly
 
-- [ ] **Step 3: Add the remaining slice tests**
+- [x] **Step 3: Add the remaining slice tests**
 
 ```csharp
 // tests/AppModules.UnitTests/Sample/ListSamplesHandlerTests.cs
@@ -1145,12 +1146,12 @@ public sealed class ListSamplesHandlerTests
 }
 ```
 
-- [ ] **Step 4: Run the unit test suite**
+- [x] **Step 4: Run the unit test suite**
 
 Run: `dotnet test tests/AppModules.UnitTests/AppModules.UnitTests.csproj -v minimal`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tests/AppModules.UnitTests
