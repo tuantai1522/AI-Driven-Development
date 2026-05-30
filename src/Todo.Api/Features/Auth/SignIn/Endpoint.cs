@@ -3,13 +3,13 @@ using MediatR;
 using Microsoft.AspNetCore.Routing;
 using Todo.Api.ExceptionHandling;
 
-namespace Todo.Api.Features.Auth.SignUp;
+namespace Todo.Api.Features.Auth.SignIn;
 
 public sealed class Endpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("/auth/sign-up", async (Command command, ISender sender, CancellationToken cancellationToken) =>
+        app.MapPost("/auth/sign-in", async (Command command, ISender sender, CancellationToken cancellationToken) =>
             {
                 var result = await sender.Send(command, cancellationToken);
 
@@ -26,7 +26,7 @@ public sealed class Endpoint : IEndpoint
                     detail: problemDetails.Detail,
                     statusCode: problemDetails.Status);
             })
-            .WithName("AuthSignUp")
+            .WithName("AuthSignIn")
             .WithTags("Auth");
     }
 }
