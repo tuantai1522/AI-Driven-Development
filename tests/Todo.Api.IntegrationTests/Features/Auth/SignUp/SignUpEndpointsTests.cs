@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Mvc;
 using Todo.Api.IntegrationTests.Fixtures;
 using Todo.Api.Persistence;
 
@@ -56,6 +57,13 @@ public sealed class SignUpEndpointsTests(CustomWebApplicationFactory factory) : 
         });
 
         response.StatusCode.Should().Be(HttpStatusCode.Conflict);
+
+        var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+        problem.Should().NotBeNull();
+        problem!.Status.Should().Be((int)HttpStatusCode.Conflict);
+        problem.Title.Should().Be("Conflict");
+        problem.Type.Should().Be("auth.duplicate_email");
+        problem.Detail.Should().Be("The email address is already in use.");
     }
 
     [Fact]
@@ -78,6 +86,13 @@ public sealed class SignUpEndpointsTests(CustomWebApplicationFactory factory) : 
         });
 
         response.StatusCode.Should().Be(HttpStatusCode.Conflict);
+
+        var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+        problem.Should().NotBeNull();
+        problem!.Status.Should().Be((int)HttpStatusCode.Conflict);
+        problem.Title.Should().Be("Conflict");
+        problem.Type.Should().Be("auth.duplicate_user_name");
+        problem.Detail.Should().Be("The user name is already in use.");
     }
 
     [Fact]

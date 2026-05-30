@@ -1,8 +1,7 @@
 using BuildingBlocks.Abstractions;
 using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Todo.Api.ExceptionHandling;
 
 namespace Todo.Api.Features.Auth.SignUp;
 
@@ -19,17 +18,13 @@ public sealed class Endpoint : IEndpoint
                     return Results.Created("/api/v1/auth/sign-up", result.Value);
                 }
 
-                var statusCode = result.Error == Auth.AuthErrors.DuplicateEmail || result.Error == Auth.AuthErrors.DuplicateUserName
-                    ? StatusCodes.Status409Conflict
-                    : StatusCodes.Status400BadRequest;
+                var problemDetails = ErrorProblemDetailsMapper.Map(result.Error!);
 
-                return Results.Problem(new ProblemDetails
-                {
-                    Status = statusCode,
-                    Title = statusCode == StatusCodes.Status409Conflict ? "Duplicate user field." : "Request failed",
-                    Detail = result.Error!.Message,
-                    Type = result.Error.Code
-                });
+                return Results.Problem(
+                    title: problemDetails.Title,
+                    type: problemDetails.Type,
+                    detail: problemDetails.Detail,
+                    statusCode: problemDetails.Status);
             })
             .WithName("AuthSignUp")
             .WithTags("Auth");

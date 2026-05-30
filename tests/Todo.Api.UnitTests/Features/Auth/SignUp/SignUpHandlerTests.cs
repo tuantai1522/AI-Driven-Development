@@ -1,4 +1,5 @@
 using FluentAssertions;
+using BuildingBlocks.Application.Results;
 using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using Todo.Api.Abstractions.Security;
@@ -51,6 +52,7 @@ public sealed class SignUpHandlerTests
 
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(AuthErrors.DuplicateEmail);
+        result.Error!.Type.Should().Be(ErrorType.Conflict);
     }
 
     [Fact]
@@ -71,6 +73,7 @@ public sealed class SignUpHandlerTests
 
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(AuthErrors.DuplicateUserName);
+        result.Error!.Type.Should().Be(ErrorType.Conflict);
     }
 
     [Fact]
