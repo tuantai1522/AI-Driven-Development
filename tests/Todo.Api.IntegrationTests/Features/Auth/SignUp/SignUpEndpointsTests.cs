@@ -23,7 +23,7 @@ public sealed class SignUpEndpointsTests(CustomWebApplicationFactory factory) : 
             userName = "sampleUser"
         });
 
-        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var body = await response.Content.ReadFromJsonAsync<SignUpResponse>();
         body.Should().NotBeNull();

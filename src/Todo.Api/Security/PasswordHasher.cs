@@ -21,4 +21,35 @@ public sealed class PasswordHasher : IPasswordHasher
 
         return $"{Iterations}.{Convert.ToBase64String(salt)}.{Convert.ToBase64String(hash)}";
     }
+
+    public bool Verify(string password, string passwordHash)
+    {
+        var segments = passwordHash.Split('.', StringSplitOptions.RemoveEmptyEntries);
+        if (segments.Length != 3 || !int.TryParse(segments[0], out var iterations))
+        {
+            return false;
+        }
+
+        byte[] salt;
+        byte[] expectedHash;
+
+        try
+        {
+            salt = Convert.FromBase64String(segments[1]);
+            expectedHash = Convert.FromBase64String(segments[2]);
+        }
+        catch (FormatException)
+        {
+            return false;
+        }
+
+        var actualHash = Rfc2898DeriveBytes.Pbkdf2(
+            password,
+            salt,
+            iterations,
+            HashAlgorithmName.SHA256,
+            expectedHash.Length);
+
+        return CryptographicOperations.FixedTimeEquals(actualHash, expectedHash);
+    }
 }

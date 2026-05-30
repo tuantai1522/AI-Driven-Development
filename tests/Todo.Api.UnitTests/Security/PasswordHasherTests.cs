@@ -15,4 +15,26 @@ public sealed class PasswordHasherTests
         hash.Should().NotBe("secret123");
         hash.Should().Contain(".");
     }
+
+    [Fact]
+    public void Verify_Should_Return_True_For_Correct_Password()
+    {
+        var hasher = new PasswordHasher();
+        var hash = hasher.Hash("secret123");
+
+        var isValid = hasher.Verify("secret123", hash);
+
+        isValid.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Verify_Should_Return_False_For_Incorrect_Password()
+    {
+        var hasher = new PasswordHasher();
+        var hash = hasher.Hash("secret123");
+
+        var isValid = hasher.Verify("wrong-password", hash);
+
+        isValid.Should().BeFalse();
+    }
 }
